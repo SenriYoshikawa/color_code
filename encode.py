@@ -34,4 +34,4 @@ for x in range(size[0]):
 		qrimg.putpixel((x, y),(int(r), int(g), int(b)))
 
 qrimg.show()
-
+qrimg.save('qrimg.png')
