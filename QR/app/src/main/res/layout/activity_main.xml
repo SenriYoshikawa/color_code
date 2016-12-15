@@ -16,6 +16,11 @@
             android:id="@+id/button"
             android:gravity="center"
             android:onClick="onClickQRCodeCreate" />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="https://wiki.archlinuxjp.org/"
+            android:id="@+id/edit_text" />
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

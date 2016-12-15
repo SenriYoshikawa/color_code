@@ -6,6 +6,7 @@ package com.example.senri.qr;
         import android.os.Bundle;
         import android.view.View;
         import android.widget.ImageView;
+        import android.widget.EditText;
         import android.widget.Toast;
 
         import com.google.zxing.BarcodeFormat;
@@ -24,8 +25,12 @@ public class MainActivity extends AppCompatActivity
     //QRCode作成
     public void onClickQRCodeCreate(View view)
     {
+        //テキスト入力を読み込み
+        EditText editText = (EditText) findViewById(R.id.edit_text);
+
         // QRCodeの作成
-        Bitmap qrCodeBitmap = this.createQRCode("https://wiki.archlinuxjp.org/");
+        //Bitmap qrCodeBitmap = this.createQRCode("https://wiki.archlinuxjp.org/");
+        Bitmap qrCodeBitmap = this.createQRCode(editText.getText().toString());
 
         // QRCodeの作成に成功した場合
         if (qrCodeBitmap != null)
