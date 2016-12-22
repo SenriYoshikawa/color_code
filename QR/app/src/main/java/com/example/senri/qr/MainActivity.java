@@ -7,6 +7,7 @@ package com.example.senri.qr;
         import android.view.View;
         import android.widget.ImageView;
         import android.widget.EditText;
+        import android.widget.TextView;
         import android.widget.Toast;
 
         import com.google.zxing.BarcodeFormat;
@@ -29,8 +30,8 @@ public class MainActivity extends AppCompatActivity
         EditText editText = (EditText) findViewById(R.id.edit_text);
 
         // QRCodeの作成
-        //Bitmap qrCodeBitmap = this.createQRCode("https://wiki.archlinuxjp.org/");
         Bitmap qrCodeBitmap = this.createQRCode(editText.getText().toString());
+        String qrCodeString = this.createQRString(editText.getText().toString());
 
         // QRCodeの作成に成功した場合
         if (qrCodeBitmap != null)
@@ -39,6 +40,11 @@ public class MainActivity extends AppCompatActivity
             ImageView imageView = (ImageView) findViewById(R.id.imageView);
             imageView.setImageBitmap(qrCodeBitmap);
         }
+
+        //テキストを書き出し
+        TextView textView = (TextView)findViewById(R.id.textView);
+        textView.setTextSize(1);
+        textView.setText(qrCodeString);
     }
 
     private Bitmap createQRCode(String contents)
@@ -47,10 +53,7 @@ public class MainActivity extends AppCompatActivity
         try {
             // QRコードの生成
             QRCodeWriter qrcodewriter = new QRCodeWriter();
-            BitMatrix qrBitMatrix = qrcodewriter.encode(contents,
-                    BarcodeFormat.QR_CODE,
-                    300,
-                    300);
+            BitMatrix qrBitMatrix = qrcodewriter.encode(contents, BarcodeFormat.QR_CODE, 300, 300);
 
             qrBitmap = Bitmap.createBitmap(300, 300, Bitmap.Config.ARGB_8888);
             qrBitmap.setPixels(this.createDot(qrBitMatrix), 0, 300, 0, 0, 300, 300);
@@ -63,6 +66,26 @@ public class MainActivity extends AppCompatActivity
         finally
         {
             return qrBitmap;
+        }
+    }
+
+    private String createQRString(String contents)
+    {
+        String str = "";
+        try
+        {
+            QRCodeWriter qrcodewriter = new QRCodeWriter();
+            BitMatrix qrBitMatrix = qrcodewriter.encode(contents, BarcodeFormat.QR_CODE, 100, 100);
+            str = qrBitMatrix.toString();
+            System.out.println(str);
+        }
+        catch(Exception ex)
+        {
+            Toast.makeText(getApplicationContext(), ex.toString(), Toast.LENGTH_SHORT).show();
+        }
+        finally
+        {
+            return str;
         }
     }
 

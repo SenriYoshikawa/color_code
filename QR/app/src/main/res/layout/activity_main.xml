@@ -9,6 +9,11 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="https://wiki.archlinuxjp.org/"
+            android:id="@+id/edit_text" />
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -16,16 +21,29 @@
             android:id="@+id/button"
             android:gravity="center"
             android:onClick="onClickQRCodeCreate" />
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="https://wiki.archlinuxjp.org/"
-            android:id="@+id/edit_text" />
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/imageView"
-            android:layout_gravity="center"
-            android:layout_marginTop="20dp" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:layout_width="0dip"
+                    android:layout_weight="1"
+                    android:layout_height="180dp"
+                    android:id="@+id/imageView"
+                    android:layout_gravity="left" />
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_weight="1"
+                    android:layout_height="180dp"
+                    android:id="@+id/textView"
+                    android:typeface="monospace"
+                    android:layout_gravity="right" />
+            </LinearLayout>
+
     </LinearLayout>
+
+
+
 </RelativeLayout>
