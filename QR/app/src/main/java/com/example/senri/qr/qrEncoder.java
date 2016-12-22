@@ -4,10 +4,17 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 
 import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import com.google.zxing.qrcode.encoder.Encoder;
+
+import java.nio.charset.Charset;
+import java.util.EnumMap;
+import java.util.Map;
+import java.util.Objects;
 
 import static android.app.PendingIntent.getActivity;
 
@@ -17,60 +24,60 @@ import static android.app.PendingIntent.getActivity;
 
 public class qrEncoder
 {
-    private int size;
-    public String string = null;
-    public Bitmap bitmap = null;
-    public String returnMsg = null;
+    private String _string = null;
+    private Bitmap _bitmap = null;
+    private String _returnMsg = null;
+    final private int _cellNum;
+
+    final private String _contents;
+    final private ErrorCorrectionLevel _level;
+    final private Charset _charset;
+    final private int _size;
 
 
-    qrEncoder(String contents)
-    {
-        this.string = this.createQRString(contents);
-        this.bitmap = this.createQRCode(contents);
-        if(returnMsg == null) returnMsg = "Create QRcode success.";
+    qrEncoder(String contents, ErrorCorrectionLevel level, Charset charset, int size) throws WriterException {
+        // 初期値検証
+        Objects.requireNonNull(contents);
+        Objects.requireNonNull(level);
+        Objects.requireNonNull(charset);
+        if (!charset.canEncode()) {
+            throw new IllegalArgumentException("cannot encode: " + charset.displayName());
+        }
+
+        // 初期化
+        _contents = contents;
+        _level = level;
+        _charset = charset;
+        _size = size;
+
+        // セル数を計算して保存
+        _cellNum = Encoder.encode(contents, ErrorCorrectionLevel.L).getVersion().getVersionNumber() * 4 + 17;
     }
 
-    private Bitmap createQRCode(String contents)
-    {
-        Bitmap qrBitmap = null;
-        try {
-            // QRコードの生成
-            QRCodeWriter qrcodewriter = new QRCodeWriter();
-            BitMatrix qrBitMatrix = qrcodewriter.encode(contents, BarcodeFormat.QR_CODE, 300, 300);
+    public Bitmap getBitmap() throws WriterException {
+        if(_bitmap != null) return _bitmap;
 
-            qrBitmap = Bitmap.createBitmap(300, 300, Bitmap.Config.ARGB_8888);
-            qrBitmap.setPixels(this.createDot(qrBitMatrix), 0, 300, 0, 0, 300, 300);
-        }
-        catch(Exception ex)
-        {
-            returnMsg = "Encoding failure.";
-        }
-        finally
-        {
-            return qrBitmap;
-        }
+        Map<EncodeHintType, Object> hints = new EnumMap<>(EncodeHintType.class);
+        hints.put(EncodeHintType.ERROR_CORRECTION, _level);
+        hints.put(EncodeHintType.CHARACTER_SET, _charset.displayName());
+        hints.put(EncodeHintType.MARGIN, 4);
+
+        QRCodeWriter writer = new QRCodeWriter();
+        BitMatrix matrix = writer.encode(_contents, BarcodeFormat.QR_CODE, _size, _size, hints);
+        final int size = matrix.getHeight();
+        _bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
+        _bitmap.setPixels(this.createDot(matrix), 0, size, 0, 0, size, size);
+
+        return _bitmap;
     }
 
-    private String createQRString(String contents)
-    {
-        String str = "";
-        try
-        {
-            this.size = Encoder.encode(contents, ErrorCorrectionLevel.L).getVersion().getVersionNumber() * 4 + 17;
+    public String getString() throws WriterException {
+        if(_string != null) return _string;
 
-            QRCodeWriter qrcodewriter = new QRCodeWriter();
-            BitMatrix qrBitMatrix = qrcodewriter.encode(contents, BarcodeFormat.QR_CODE, this.size, this.size);
-            str = qrBitMatrix.toString();
-            //System.out.println(str);
-        }
-        catch(Exception ex)
-        {
-            returnMsg = "Encoding failure.";
-        }
-        finally
-        {
-            return str;
-        }
+        QRCodeWriter qrcodewriter = new QRCodeWriter();
+        BitMatrix qrBitMatrix = qrcodewriter.encode(_contents, BarcodeFormat.QR_CODE, _cellNum, _cellNum);
+        _string = qrBitMatrix.toString();
+        return _string;
     }
 
     // ドット単位の判定
