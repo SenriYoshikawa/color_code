@@ -13,6 +13,8 @@ package com.example.senri.qr;
         import com.google.zxing.BarcodeFormat;
         import com.google.zxing.common.BitMatrix;
         import com.google.zxing.qrcode.QRCodeWriter;
+        import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
+        import com.google.zxing.qrcode.encoder.Encoder;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -43,7 +45,6 @@ public class MainActivity extends AppCompatActivity
 
         //テキストを書き出し
         TextView textView = (TextView)findViewById(R.id.textView);
-        textView.setTextSize(1);
         textView.setText(qrCodeString);
     }
 
@@ -74,10 +75,10 @@ public class MainActivity extends AppCompatActivity
         String str = "";
         try
         {
+            int size = Encoder.encode(contents, ErrorCorrectionLevel.L).getVersion().getVersionNumber();
             QRCodeWriter qrcodewriter = new QRCodeWriter();
-            BitMatrix qrBitMatrix = qrcodewriter.encode(contents, BarcodeFormat.QR_CODE, 100, 100);
+            BitMatrix qrBitMatrix = qrcodewriter.encode(contents, BarcodeFormat.QR_CODE, size, size);
             str = qrBitMatrix.toString();
-            System.out.println(str);
         }
         catch(Exception ex)
         {

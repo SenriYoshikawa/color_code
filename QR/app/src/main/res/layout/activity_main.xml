@@ -39,6 +39,7 @@
                     android:layout_height="180dp"
                     android:id="@+id/textView"
                     android:typeface="monospace"
+                    android:textSize="2dp"
                     android:layout_gravity="right" />
             </LinearLayout>
 
