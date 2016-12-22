@@ -83,31 +83,20 @@ public class qrEncoder
     // ドット単位の判定
     private int[] createDot(BitMatrix qrBitMatrix)
     {
-        // 縦幅・横幅の取得
-        int width = qrBitMatrix.getWidth();
-        int height = qrBitMatrix.getHeight();
-        // 枠の生成
+        final int width = qrBitMatrix.getWidth();
+        final int height = qrBitMatrix.getHeight();
         int[] pixels = new int[width * height];
 
-        // データが存在するところを黒にする
         for (int y = 0; y < height; y++)
         {
-            // ループ回数盤目のOffsetの取得
-            int offset = y * width;
+            final int offset = y * width;
             for (int x = 0; x < width; x++)
             {
-                // データが存在する場合
-                if (qrBitMatrix.get(x, y))
-                {
-                    pixels[offset + x] = Color.BLACK;
-                }
-                else
-                {
-                    pixels[offset + x] = Color.WHITE;
-                }
+                if (qrBitMatrix.get(x, y)) pixels[offset + x] = Color.BLACK;
+                else pixels[offset + x] = Color.WHITE;
             }
         }
-        // 結果を返す
+
         return pixels;
     }
 }

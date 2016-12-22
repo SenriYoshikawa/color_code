@@ -29,7 +29,6 @@ public class MainActivity extends AppCompatActivity {
         EditText editText = (EditText) findViewById(R.id.edit_text);
 
         try {
-            String encoding = "UTF-8";
             qrEncoder qr = new qrEncoder(editText.getText().toString(), ErrorCorrectionLevel.L, java.nio.charset.StandardCharsets.UTF_8, 300);
             imageView.setImageBitmap(qr.getBitmap());
             textView.setText(qr.getString());
