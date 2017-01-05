@@ -22,11 +22,10 @@ import static android.app.PendingIntent.getActivity;
  * Created by senri on 2016/12/22.
  */
 
-public class qrEncoder
+public class QrEncoder
 {
     private String _string = null;
     private Bitmap _bitmap = null;
-    private String _returnMsg = null;
     final private int _cellNum;
 
     final private String _contents;
@@ -35,7 +34,7 @@ public class qrEncoder
     final private int _size;
 
 
-    qrEncoder(String contents, ErrorCorrectionLevel level, Charset charset, int size) throws WriterException {
+    QrEncoder(String contents, ErrorCorrectionLevel level, Charset charset, int size) throws WriterException {
         // 初期値検証
         Objects.requireNonNull(contents);
         Objects.requireNonNull(level);
