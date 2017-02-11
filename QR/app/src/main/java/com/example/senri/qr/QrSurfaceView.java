@@ -61,7 +61,8 @@ public class QrSurfaceView extends SurfaceView implements SurfaceHolder.Callback
     public QrSurfaceView(Context context, AttributeSet attrs) {
         super(context, attrs, 0);
 
-        qrBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.qrcode);
+        //qrBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.qrcode);
+        qrBitmap =  Bitmap.createBitmap(64, 64, Bitmap.Config.ARGB_4444);
         qrDrawMatrix = new Matrix();
 
         qrScale = 1.0f;
@@ -116,6 +117,7 @@ public class QrSurfaceView extends SurfaceView implements SurfaceHolder.Callback
     };
 
     public boolean onTouch(View v, MotionEvent event) {
+        if(qrBitmap == null) return false;
         mTranslationGestureDetector.onTouch(v, event);
         mScaleGestureDetector.onTouchEvent(event);
         qrDraw();
@@ -133,5 +135,10 @@ public class QrSurfaceView extends SurfaceView implements SurfaceHolder.Callback
         //canvas.drawColor(Color.WHITE);
         canvas.drawBitmap(qrBitmap, qrDrawMatrix, null);
         mHolder.unlockCanvasAndPost(canvas);
+    }
+
+    public void setQrBitmap(Bitmap _qrBitmap)
+    {
+        qrBitmap = _qrBitmap;
     }
 }
