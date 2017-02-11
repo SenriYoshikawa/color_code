@@ -13,32 +13,6 @@
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <EditText
-                android:layout_width="0dp"
-                android:layout_weight = "1"
-                android:layout_height="wrap_content"
-                android:text="https://wiki.archlinuxjp.org/"
-                android:id="@+id/edit_text" />
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Create"
-                android:id="@+id/button"
-                android:gravity="center"
-                android:onClick="onClickQRCodeCreate" />
-        </LinearLayout>
-
-        <com.example.senri.qr.QrSurfaceView
-            android:id="@+id/QrSurfaceView"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight = "1">
-        </com.example.senri.qr.QrSurfaceView>
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="bottom">
             <Button
@@ -54,12 +28,46 @@
                 android:layout_weight = "1"
                 android:layout_height="wrap_content"
                 android:text="Set color"
-                android:id="@+id/setColor"
+                android:id="@+id/setColorButton"
                 android:gravity="center"
                 android:onClick="onClickSetColor" />
         </LinearLayout>
-    </LinearLayout>
 
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <EditText
+                android:layout_width="0dp"
+                android:layout_weight = "1"
+                android:layout_height="wrap_content"
+                android:text="https://wiki.archlinuxjp.org/"
+                android:id="@+id/edit_text" />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Create QR"
+                android:id="@+id/createQrButton"
+                android:gravity="center"
+                android:onClick="onClickQRCodeCreate" />
+        </LinearLayout>
 
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight = "1">
+                <com.example.senri.qr.QrSurfaceView
+                    android:id="@+id/QrSurfaceView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                </com.example.senri.qr.QrSurfaceView>
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/pictureView"/>
+        </FrameLayout>
+
+     </LinearLayout>
 
 </RelativeLayout>

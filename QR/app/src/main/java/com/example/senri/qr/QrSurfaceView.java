@@ -2,7 +2,6 @@ package com.example.senri.qr;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
@@ -14,6 +13,7 @@ import android.view.ScaleGestureDetector;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.widget.Button;
 
 /**
  * Created by senri on 2017/01/19.
@@ -61,7 +61,7 @@ public class QrSurfaceView extends SurfaceView implements SurfaceHolder.Callback
     public QrSurfaceView(Context context, AttributeSet attrs) {
         super(context, attrs, 0);
 
-        qrBitmap =  Bitmap.createBitmap(64, 64, Bitmap.Config.ARGB_4444);
+        qrBitmap = Bitmap.createBitmap(64, 64, Bitmap.Config.ARGB_4444);
         qrDrawMatrix = new Matrix();
 
         qrScale = 1.0f;
@@ -74,7 +74,6 @@ public class QrSurfaceView extends SurfaceView implements SurfaceHolder.Callback
         setZOrderOnTop(true);
 
         setOnTouchListener(this);
-        
     }
 
     public QrSurfaceView(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -115,8 +114,9 @@ public class QrSurfaceView extends SurfaceView implements SurfaceHolder.Callback
         };
     };
 
+    @Override
     public boolean onTouch(View v, MotionEvent event) {
-        if(qrBitmap == null) return false;
+        if(qrBitmap == null) return true;
         mTranslationGestureDetector.onTouch(v, event);
         mScaleGestureDetector.onTouchEvent(event);
         qrDraw();
