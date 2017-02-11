@@ -3,6 +3,7 @@ package com.example.senri.qr;
         import android.support.v7.app.AppCompatActivity;
         import android.os.Bundle;
         import android.view.View;
+        import android.view.inputmethod.InputMethodManager;
         import android.widget.Button;
         import android.widget.EditText;
         import android.widget.Toast;
@@ -33,10 +34,11 @@ public class MainActivity extends AppCompatActivity {
     public void onClickQRCodeCreate(View view) {
         try {
             qr = new QrEncoder(editText.getText().toString(), ErrorCorrectionLevel.L, java.nio.charset.StandardCharsets.UTF_8, 300);
-            //qrView.setImageBitmap(qr.getBitmap());
             qrSurfaceView.setQrBitmap(qr.getBitmap());
             qrSurfaceView.qrDraw();
             setPicButton.setEnabled(true);
+            InputMethodManager inputMethodMgr = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+            inputMethodMgr.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         } catch (Exception ex) {
             Toast.makeText(getApplicationContext(), ex.toString(), Toast.LENGTH_SHORT).show();
         }

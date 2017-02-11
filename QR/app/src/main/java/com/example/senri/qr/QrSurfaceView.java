@@ -61,7 +61,6 @@ public class QrSurfaceView extends SurfaceView implements SurfaceHolder.Callback
     public QrSurfaceView(Context context, AttributeSet attrs) {
         super(context, attrs, 0);
 
-        //qrBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.qrcode);
         qrBitmap =  Bitmap.createBitmap(64, 64, Bitmap.Config.ARGB_4444);
         qrDrawMatrix = new Matrix();
 
