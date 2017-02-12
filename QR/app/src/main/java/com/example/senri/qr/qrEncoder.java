@@ -2,6 +2,7 @@ package com.example.senri.qr;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.util.Log;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
@@ -53,9 +54,7 @@ public class QrEncoder
         _cellNum = Encoder.encode(contents, ErrorCorrectionLevel.L).getVersion().getVersionNumber() * 4 + 17;
     }
 
-    public Bitmap getBitmap() throws WriterException {
-        if(_bitmap != null) return _bitmap;
-
+    public Bitmap getBitmap(int backColor) throws WriterException {
         Map<EncodeHintType, Object> hints = new EnumMap<>(EncodeHintType.class);
         hints.put(EncodeHintType.ERROR_CORRECTION, _level);
         hints.put(EncodeHintType.CHARACTER_SET, _charset.displayName());
@@ -65,7 +64,7 @@ public class QrEncoder
         BitMatrix matrix = writer.encode(_contents, BarcodeFormat.QR_CODE, _size, _size, hints);
         final int size = matrix.getHeight();
         _bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
-        _bitmap.setPixels(this.createDot(matrix), 0, size, 0, 0, size, size);
+        _bitmap.setPixels(this.createDot(matrix, backColor), 0, size, 0, 0, size, size);
 
         return _bitmap;
     }
@@ -80,7 +79,7 @@ public class QrEncoder
     }
 
     // ドット単位の判定
-    private int[] createDot(BitMatrix qrBitMatrix)
+    private int[] createDot(BitMatrix qrBitMatrix, int backColor)
     {
         final int width = qrBitMatrix.getWidth();
         final int height = qrBitMatrix.getHeight();
@@ -93,10 +92,10 @@ public class QrEncoder
             {
                 if (qrBitMatrix.get(x, y)) pixels[offset + x] = Color.BLACK;
                 //else pixels[offset + x] = Color.argb(0, 0, 0, 0);
-                else pixels[offset + x] = Color.WHITE;
+                //else pixels[offset + x] = Color.WHITE;
+                else pixels[offset + x] = backColor;
             }
         }
-
         return pixels;
     }
 }

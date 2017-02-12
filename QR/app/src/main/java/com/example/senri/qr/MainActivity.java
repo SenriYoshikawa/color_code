@@ -3,8 +3,10 @@ package com.example.senri.qr;
         import android.content.Intent;
         import android.graphics.Bitmap;
         import android.graphics.BitmapFactory;
+        import android.graphics.Color;
         import android.support.v7.app.AppCompatActivity;
         import android.os.Bundle;
+        import android.util.Log;
         import android.view.MotionEvent;
         import android.view.View;
         import android.view.inputmethod.InputMethodManager;
@@ -12,6 +14,8 @@ package com.example.senri.qr;
         import android.widget.EditText;
         import android.widget.ImageView;
         import android.widget.Toast;
+
+        import com.google.zxing.WriterException;
         import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
         import java.io.InputStream;
@@ -65,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
                     Bitmap img = BitmapFactory.decodeStream(in);
                     in.close();
                     pictureView.setImageBitmap(img);
-                    qrSurfaceView.setPicPixels(img);
+                    qrSurfaceView.setPictureBitmap(img);
                 } catch (Exception e) {
                 }
             }
@@ -76,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
     public void onClickQRCodeCreate(View view) {
         try {
             qr = new QrEncoder(editText.getText().toString(), ErrorCorrectionLevel.L, java.nio.charset.StandardCharsets.UTF_8, 300);
-            qrSurfaceView.setQrBitmap(qr.getBitmap());
+            qrSurfaceView.setQrBitmap(qr.getBitmap(Color.WHITE));
             qrSurfaceView.qrDraw();
             InputMethodManager inputMethodMgr = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
             inputMethodMgr.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
@@ -87,8 +91,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void onClickSetColor(View view)
-    {
+    public void onClickSetColor(View view) throws WriterException {
         qrSurfaceView.setColor();
+        Log.d("backColor", Integer.toHexString(qrSurfaceView.qrBackColor));
+        qrSurfaceView.setQrBitmap(qr.getBitmap(qrSurfaceView.qrBackColor));
+        qrSurfaceView.qrDraw();
     }
 }

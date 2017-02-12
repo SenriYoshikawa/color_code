@@ -24,6 +24,7 @@ public class QrSurfaceView extends SurfaceView implements SurfaceHolder.Callback
 
     private SurfaceHolder mHolder;
     private Bitmap qrBitmap;
+    private Bitmap pictureBitmap;
     private Matrix qrDrawMatrix;
     private float qrPositionX, qrPositionY;
     private float qrScale;
@@ -33,6 +34,7 @@ public class QrSurfaceView extends SurfaceView implements SurfaceHolder.Callback
     private ImageView pictureView;
     private int pictureWidth, pictureHeight;
     private float xMaskOffset, yMaskOffset;
+    public int qrBackColor;
 
     private int[] picPixcls;
 
@@ -151,12 +153,12 @@ public class QrSurfaceView extends SurfaceView implements SurfaceHolder.Callback
     public void setColor()
     {
         Canvas canvas = mHolder.lockCanvas();
-        float maskSize;
+        int maskSize;
         float canvas2pic;
         if(pictureWidth / canvas.getWidth() * canvas.getHeight() > pictureHeight)
         {
             //横幅で合わせた場合
-            maskSize = pictureWidth * qrBitmap.getWidth() * qrScale / canvas.getWidth();
+            maskSize = (int)(pictureWidth * qrBitmap.getWidth() * qrScale / canvas.getWidth());
             yMaskOffset = (canvas.getHeight() - ((float)canvas.getWidth() / pictureWidth * pictureHeight)) / 2;
             xMaskOffset = 0;
             canvas2pic = (float)pictureWidth / canvas.getWidth();
@@ -164,46 +166,62 @@ public class QrSurfaceView extends SurfaceView implements SurfaceHolder.Callback
         else
         {
             //縦幅で合わせた場合
-            maskSize = pictureHeight * qrBitmap.getHeight() * qrScale / canvas.getHeight();
+            maskSize = (int)(pictureHeight * qrBitmap.getHeight() * qrScale / canvas.getHeight());
             xMaskOffset = (canvas.getWidth() - ((float)canvas.getHeight() / pictureHeight  * pictureWidth)) / 2;
             yMaskOffset = 0;
             canvas2pic = (float)pictureHeight / canvas.getHeight();
         }
 
-        /*
-        Log.d("picX1", " " + ((qrPositionX - qrBitmap.getWidth() / 2 - xMaskOffset) * canvas2pic));
-        Log.d("picY1", " " + ((qrPositionY - qrBitmap.getHeight() / 2 - yMaskOffset) * canvas2pic));
-        Log.d("picX2", " " + ((qrPositionX - qrBitmap.getWidth() / 2 - xMaskOffset) * canvas2pic + maskSize));
-        Log.d("picY2", " " + ((qrPositionY - qrBitmap.getHeight() / 2 - yMaskOffset) * canvas2pic + maskSize));
-        */
+        int luX = (int)((qrPositionX - qrBitmap.getWidth() / 2 - xMaskOffset) * canvas2pic);
+        int luY = (int)((qrPositionY - qrBitmap.getHeight() / 2 - yMaskOffset) * canvas2pic);
+        int rlX = luX + maskSize;
+        int rlY = luY + maskSize;
+
+        Log.d("luX", " " + luX);
+        Log.d("luY", " " + luY);
+        Log.d("rlX", " " + rlX);
+        Log.d("rlY", " " + rlY);
+
+        picPixcls = new int[maskSize * maskSize];
+        Log.d("create array", "success");
+        pictureBitmap.getPixels(picPixcls, //受け取る配列
+                0, //picPixelsの先頭位置
+                maskSize, //picPixelsの列数
+                luX,//pictureを切り取る矩形の左上のx要素
+                luY,//pictureを切り取る矩形の左上のy要素
+                maskSize,//pictureを切り取る矩形の右下のx要素
+                maskSize);//pictureを切り取る矩形の右下のy要素
+
+        Log.d("getPixels", "success");
+
+        int tempRgbArray[][] = new int[maskSize][3];
+        for(int i = 0; i < maskSize; i++)
+        {
+            int forAverage = 0;
+            for(int j = 0; j < maskSize; j++)
+            {
+                forAverage += picPixcls[i];
+            }
+            tempRgbArray[i][0] = (forAverage & 0x00FF0000) >> 16 / maskSize;
+            tempRgbArray[i][1] = (forAverage & 0x0000FF00) >> 8 / maskSize;
+            tempRgbArray[i][2] = forAverage & 0x000000FF / maskSize;
+        }
+        int forRgbAverage[] = {0,0,0};
+        for(int i = 0; i < maskSize; i++) for(int j = 0; j < 3; j++)
+        {
+            forRgbAverage[j] += tempRgbArray[i][j];
+        }
+        for(int i = 0; i < 3; i++) forRgbAverage[i] /= maskSize;
+        qrBackColor = 0xFF000000 | forRgbAverage[0] << 16 | forRgbAverage[1] << 8 | forRgbAverage[2];
 
         mHolder.unlockCanvasAndPost(canvas);
-        qrDraw();
     }
 
-    public void setPicPixels(Bitmap pictureBitmap)
+    public void setPictureBitmap(Bitmap pictureBitmap_)
     {
-        //Log.d("qrSizeX"," " + pictureBitmap.getWidth());
-        //Log.d("qrSizeY"," " + pictureBitmap.getHeight());
-        int picWidth = pictureBitmap.getWidth();
-        int picHeight = pictureBitmap.getHeight();
-        pictureWidth = pictureBitmap.getWidth();
-        pictureHeight = pictureBitmap.getHeight();
-
-
-
-              /*
-        int picBaseMaskWidth = 0;
-        int picBaseMaskHeight = 0;
-        picPixcels = new int[picBaseMaskHeight * picBaseMaskWidth];
-        pictureBitmap.getPixels(picPixcels, //受け取る配列
-                0, //picPixcelsの先頭位置
-                picWidth, //picPixcelsの列数
-                0,//pictureを切り取る矩形の左上のx要素
-                0,//pictureを切り取る矩形の左上のy要素
-                picBaseMaskWidth,//pictureを切り取る矩形の右下のx要素
-                picBaseMaskHeight);//pictureを切り取る矩形の右下のy要素
-        */
+        pictureWidth = pictureBitmap_.getWidth();
+        pictureHeight = pictureBitmap_.getHeight();
+        pictureBitmap = pictureBitmap_;
     }
 
 }
