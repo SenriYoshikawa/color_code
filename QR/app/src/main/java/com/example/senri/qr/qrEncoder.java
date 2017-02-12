@@ -92,7 +92,8 @@ public class QrEncoder
             for (int x = 0; x < width; x++)
             {
                 if (qrBitMatrix.get(x, y)) pixels[offset + x] = Color.BLACK;
-                else pixels[offset + x] = Color.argb(0, 0, 0, 0);
+                //else pixels[offset + x] = Color.argb(0, 0, 0, 0);
+                else pixels[offset + x] = Color.WHITE;
             }
         }
 

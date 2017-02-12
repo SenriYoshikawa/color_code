@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
         setTitle("Create QR code");
     }
 
+    // 選択した画像を表示
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_GALLERY_GET_IMAGE && resultCode == RESULT_OK) {
             {
@@ -63,15 +64,13 @@ public class MainActivity extends AppCompatActivity {
                     InputStream in = getContentResolver().openInputStream(data.getData());
                     Bitmap img = BitmapFactory.decodeStream(in);
                     in.close();
-                    // 選択した画像を表示
-                    //qrSurfaceView.setBackground();
                     pictureView.setImageBitmap(img);
+                    qrSurfaceView.setPicPixels(img);
                 } catch (Exception e) {
                 }
             }
         }
     }
-
 
     //QRCode作成
     public void onClickQRCodeCreate(View view) {
@@ -82,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
             InputMethodManager inputMethodMgr = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
             inputMethodMgr.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
             setTitle("Move and resize QR");
+            setColorButton.setEnabled(true);
         } catch (Exception ex) {
             Toast.makeText(getApplicationContext(), ex.toString(), Toast.LENGTH_SHORT).show();
         }
@@ -89,10 +89,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void onClickSetColor(View view)
     {
-        /*
-        final int[] anchorPos = new int[2];
-        overQrView.getLocationInWindow(anchorPos);
-        System.out.printf("width = %d height = %d x = %d y = %d\n", overQrView.getWidth(), overQrView.getHeight(), anchorPos[0],anchorPos[1]);
-        */
+        qrSurfaceView.setColor();
     }
 }

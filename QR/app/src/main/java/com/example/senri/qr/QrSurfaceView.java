@@ -8,12 +8,13 @@ import android.graphics.Matrix;
 import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageView;
 
 /**
  * Created by senri on 2017/01/19.
@@ -29,6 +30,11 @@ public class QrSurfaceView extends SurfaceView implements SurfaceHolder.Callback
     private ScaleGestureDetector mScaleGestureDetector;
     private TranslationGestureDetector mTranslationGestureDetector;
     private float mPrevX, mPrevY;
+    private ImageView pictureView;
+    private int pictureWidth, pictureHeight;
+    private float xMaskOffset, yMaskOffset;
+
+    private int[] picPixcls;
 
     private TranslationGestureListener mTranslationListener = new TranslationGestureListener() {
         @Override
@@ -61,7 +67,8 @@ public class QrSurfaceView extends SurfaceView implements SurfaceHolder.Callback
     public QrSurfaceView(Context context, AttributeSet attrs) {
         super(context, attrs, 0);
 
-        qrBitmap = Bitmap.createBitmap(64, 64, Bitmap.Config.ARGB_4444);
+        qrBitmap = Bitmap.createBitmap(64, 64, Bitmap.Config.ARGB_4444);//ダミー
+        pictureView = (ImageView) findViewById(R.id.pictureView);
         qrDrawMatrix = new Matrix();
 
         qrScale = 1.0f;
@@ -120,6 +127,7 @@ public class QrSurfaceView extends SurfaceView implements SurfaceHolder.Callback
         mTranslationGestureDetector.onTouch(v, event);
         mScaleGestureDetector.onTouchEvent(event);
         qrDraw();
+        //if(event.getAction() == MotionEvent.ACTION_UP) setColor();
         return true;
     }
 
@@ -131,7 +139,6 @@ public class QrSurfaceView extends SurfaceView implements SurfaceHolder.Callback
         qrDrawMatrix.postScale(qrScale, qrScale);
         qrDrawMatrix.postTranslate(-qrBitmap.getWidth() / 2 * qrScale, -qrBitmap.getHeight() / 2 * qrScale);
         qrDrawMatrix.postTranslate(qrPositionX, qrPositionY);
-        //canvas.drawColor(Color.WHITE);
         canvas.drawBitmap(qrBitmap, qrDrawMatrix, null);
         mHolder.unlockCanvasAndPost(canvas);
     }
@@ -140,4 +147,63 @@ public class QrSurfaceView extends SurfaceView implements SurfaceHolder.Callback
     {
         qrBitmap = _qrBitmap;
     }
+
+    public void setColor()
+    {
+        Canvas canvas = mHolder.lockCanvas();
+        float maskSize;
+        float canvas2pic;
+        if(pictureWidth / canvas.getWidth() * canvas.getHeight() > pictureHeight)
+        {
+            //横幅で合わせた場合
+            maskSize = pictureWidth * qrBitmap.getWidth() * qrScale / canvas.getWidth();
+            yMaskOffset = (canvas.getHeight() - ((float)canvas.getWidth() / pictureWidth * pictureHeight)) / 2;
+            xMaskOffset = 0;
+            canvas2pic = (float)pictureWidth / canvas.getWidth();
+        }
+        else
+        {
+            //縦幅で合わせた場合
+            maskSize = pictureHeight * qrBitmap.getHeight() * qrScale / canvas.getHeight();
+            xMaskOffset = (canvas.getWidth() - ((float)canvas.getHeight() / pictureHeight  * pictureWidth)) / 2;
+            yMaskOffset = 0;
+            canvas2pic = (float)pictureHeight / canvas.getHeight();
+        }
+
+        /*
+        Log.d("picX1", " " + ((qrPositionX - qrBitmap.getWidth() / 2 - xMaskOffset) * canvas2pic));
+        Log.d("picY1", " " + ((qrPositionY - qrBitmap.getHeight() / 2 - yMaskOffset) * canvas2pic));
+        Log.d("picX2", " " + ((qrPositionX - qrBitmap.getWidth() / 2 - xMaskOffset) * canvas2pic + maskSize));
+        Log.d("picY2", " " + ((qrPositionY - qrBitmap.getHeight() / 2 - yMaskOffset) * canvas2pic + maskSize));
+        */
+
+        mHolder.unlockCanvasAndPost(canvas);
+        qrDraw();
+    }
+
+    public void setPicPixels(Bitmap pictureBitmap)
+    {
+        //Log.d("qrSizeX"," " + pictureBitmap.getWidth());
+        //Log.d("qrSizeY"," " + pictureBitmap.getHeight());
+        int picWidth = pictureBitmap.getWidth();
+        int picHeight = pictureBitmap.getHeight();
+        pictureWidth = pictureBitmap.getWidth();
+        pictureHeight = pictureBitmap.getHeight();
+
+
+
+              /*
+        int picBaseMaskWidth = 0;
+        int picBaseMaskHeight = 0;
+        picPixcels = new int[picBaseMaskHeight * picBaseMaskWidth];
+        pictureBitmap.getPixels(picPixcels, //受け取る配列
+                0, //picPixcelsの先頭位置
+                picWidth, //picPixcelsの列数
+                0,//pictureを切り取る矩形の左上のx要素
+                0,//pictureを切り取る矩形の左上のy要素
+                picBaseMaskWidth,//pictureを切り取る矩形の右下のx要素
+                picBaseMaskHeight);//pictureを切り取る矩形の右下のy要素
+        */
+    }
+
 }
