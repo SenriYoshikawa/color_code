@@ -172,15 +172,15 @@ public class QrSurfaceView extends SurfaceView implements SurfaceHolder.Callback
             canvas2pic = (float)pictureHeight / canvas.getHeight();
         }
 
-        int luX = (int)((qrPositionX - qrBitmap.getWidth() / 2 - xMaskOffset) * canvas2pic);
-        int luY = (int)((qrPositionY - qrBitmap.getHeight() / 2 - yMaskOffset) * canvas2pic);
-        int rlX = luX + maskSize;
-        int rlY = luY + maskSize;
+        int luX = (int)((qrPositionX - qrBitmap.getWidth() * qrScale / 2 - xMaskOffset) * canvas2pic);
+        int luY = (int)((qrPositionY - qrBitmap.getHeight() * qrScale / 2 - yMaskOffset) * canvas2pic);
+        //int rlX = luX + maskSize;
+        //int rlY = luY + maskSize;
 
         Log.d("luX", " " + luX);
         Log.d("luY", " " + luY);
-        Log.d("rlX", " " + rlX);
-        Log.d("rlY", " " + rlY);
+        //Log.d("rlX", " " + rlX);
+        //Log.d("rlY", " " + rlY);
 
         picPixcls = new int[maskSize * maskSize];
         Log.d("create array", "success");
@@ -202,14 +202,14 @@ public class QrSurfaceView extends SurfaceView implements SurfaceHolder.Callback
             {
                 forAverage += picPixcls[i];
             }
-            tempRgbArray[i][0] = (forAverage & 0x00FF0000) >> 16 / maskSize;
-            tempRgbArray[i][1] = (forAverage & 0x0000FF00) >> 8 / maskSize;
-            tempRgbArray[i][2] = forAverage & 0x000000FF / maskSize;
+            tempRgbArray[i][0] = (forAverage & 0x00FF0000) >> 16;
+            tempRgbArray[i][1] = (forAverage & 0x0000FF00) >> 8;
+            tempRgbArray[i][2] = forAverage & 0x000000FF;
         }
         int forRgbAverage[] = {0,0,0};
         for(int i = 0; i < maskSize; i++) for(int j = 0; j < 3; j++)
         {
-            forRgbAverage[j] += tempRgbArray[i][j];
+            forRgbAverage[j] += tempRgbArray[i][j] / maskSize;
         }
         for(int i = 0; i < 3; i++) forRgbAverage[i] /= maskSize;
         qrBackColor = 0xFF000000 | forRgbAverage[0] << 16 | forRgbAverage[1] << 8 | forRgbAverage[2];
