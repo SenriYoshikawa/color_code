@@ -31,7 +31,6 @@ public class QrSurfaceView extends SurfaceView implements SurfaceHolder.Callback
     private ScaleGestureDetector mScaleGestureDetector;
     private TranslationGestureDetector mTranslationGestureDetector;
     private float mPrevX, mPrevY;
-    private ImageView pictureView;
     private int pictureWidth, pictureHeight;
     private float xMaskOffset, yMaskOffset;
     public int qrBackColor;
@@ -70,7 +69,6 @@ public class QrSurfaceView extends SurfaceView implements SurfaceHolder.Callback
         super(context, attrs, 0);
 
         qrBitmap = Bitmap.createBitmap(64, 64, Bitmap.Config.ARGB_4444);//ダミー
-        pictureView = (ImageView) findViewById(R.id.pictureView);
         qrDrawMatrix = new Matrix();
 
         qrScale = 1.0f;
@@ -199,7 +197,7 @@ public class QrSurfaceView extends SurfaceView implements SurfaceHolder.Callback
             {
                 forAverage[0] += (picPixcls[i * 10 * maskSize + j * 10] & 0x00FF0000) >> 16;
                 forAverage[1] += (picPixcls[i * 10 * maskSize + j * 10] & 0x0000FF00) >> 8;
-                forAverage[2] += (picPixcls[i * 10 * maskSize + j * 10] & 0x000000FF) >> 0;
+                forAverage[2] += (picPixcls[i * 10 * maskSize + j * 10] & 0x000000FF);
             }
             for(int j = 0; j < 3; j++) tempRgbArray[i][j] = forAverage[j] / (maskSize / 10);
         }

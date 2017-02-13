@@ -58,7 +58,7 @@ public class QrEncoder
         Map<EncodeHintType, Object> hints = new EnumMap<>(EncodeHintType.class);
         hints.put(EncodeHintType.ERROR_CORRECTION, _level);
         hints.put(EncodeHintType.CHARACTER_SET, _charset.displayName());
-        hints.put(EncodeHintType.MARGIN, 4);
+        hints.put(EncodeHintType.MARGIN, 0);
 
         QRCodeWriter writer = new QRCodeWriter();
         BitMatrix matrix = writer.encode(_contents, BarcodeFormat.QR_CODE, _size, _size, hints);
@@ -83,6 +83,7 @@ public class QrEncoder
     {
         final int width = qrBitMatrix.getWidth();
         final int height = qrBitMatrix.getHeight();
+        final int codeColor = ~backColor | 0xFF000000;
         int[] pixels = new int[width * height];
 
         for (int y = 0; y < height; y++)
@@ -90,7 +91,8 @@ public class QrEncoder
             final int offset = y * width;
             for (int x = 0; x < width; x++)
             {
-                if (qrBitMatrix.get(x, y)) pixels[offset + x] = Color.BLACK;
+                //if (qrBitMatrix.get(x, y)) pixels[offset + x] = Color.BLACK;
+                if (qrBitMatrix.get(x, y)) pixels[offset + x] = codeColor;
                 //else pixels[offset + x] = Color.argb(0, 0, 0, 0);
                 //else pixels[offset + x] = Color.WHITE;
                 else pixels[offset + x] = backColor;
