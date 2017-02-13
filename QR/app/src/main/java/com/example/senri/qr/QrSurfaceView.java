@@ -191,24 +191,24 @@ public class QrSurfaceView extends SurfaceView implements SurfaceHolder.Callback
 
         Log.d("getPixels", "success");
 
-        int tempRgbArray[][] = new int[maskSize][3];
-        for(int i = 0; i < maskSize; i++)
+        int tempRgbArray[][] = new int[maskSize/10][3];
+        for(int i = 0; i < maskSize/10; i++)
         {
             int forAverage[] = {0,0,0};
-            for(int j = 0; j < maskSize; j++)
+            for(int j = 0; j < maskSize/10; j++)
             {
-                forAverage[0] += (picPixcls[i * maskSize + j] & 0x00FF0000) >> 16;
-                forAverage[1] += (picPixcls[i * maskSize + j] & 0x0000FF00) >> 8;
-                forAverage[2] += (picPixcls[i * maskSize + j] & 0x000000FF) >> 0;
+                forAverage[0] += (picPixcls[i * 10 * maskSize + j * 10] & 0x00FF0000) >> 16;
+                forAverage[1] += (picPixcls[i * 10 * maskSize + j * 10] & 0x0000FF00) >> 8;
+                forAverage[2] += (picPixcls[i * 10 * maskSize + j * 10] & 0x000000FF) >> 0;
             }
-            for(int j = 0; j < 3; j++) tempRgbArray[i][j] = forAverage[j] / maskSize;
+            for(int j = 0; j < 3; j++) tempRgbArray[i][j] = forAverage[j] / (maskSize / 10);
         }
         int forRgbAverage[] = {0,0,0};
-        for(int i = 0; i < maskSize; i++) for(int j = 0; j < 3; j++)
+        for(int i = 0; i < maskSize/10; i++) for(int j = 0; j < 3; j++)
         {
             forRgbAverage[j] += tempRgbArray[i][j];
         }
-        for(int i = 0; i < 3; i++) forRgbAverage[i] /= maskSize;
+        for(int i = 0; i < 3; i++) forRgbAverage[i] /= (maskSize/10);
         qrBackColor = 0xFF000000 | forRgbAverage[0] << 16 | forRgbAverage[1] << 8 | forRgbAverage[2];
 
         mHolder.unlockCanvasAndPost(canvas);
